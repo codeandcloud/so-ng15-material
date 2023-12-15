@@ -1,3 +1,4 @@
+@use "sass:map";
 @use '@angular/material' as mat;
 
 @include mat.core();
@@ -16,32 +17,43 @@ $my-theme: mat.define-light-theme(
     color: (
       primary: $theme-primary,
       accent: $theme-accent,
-      warn: $theme-warn,
+      warn: $theme-warn
     ),
-    typography: mat.define-typography-config(),
+    typography: mat.define-typography-config()
   )
 );
 
 @function my-mat-light-theme-foreground($color) {
   @return (
-    text: var(--color-text-default),
-    disabled: var(--color-text-disabled),
-    disabled-button: var(--color-text-disabled),
-    disabled-text: var(--color-text-disabled),
-    divider: rgba(0, 0, 0, 0.12),
-    secondary-text: rgba(0, 0, 0, 0.54)
+    base:              $color,
+    divider:           rgba(0, 0, 0, 0.12),
+    disabled:          var(--color-text-disabled),
+    disabled-button:   var(--color-text-disabled),
+    disabled-text:     var(--color-text-disabled),
+    secondary-text:    rgba(0, 0, 0, 0.54),
+    text:              var(--color-text-default),
   );
 }
 
 $my-foreground: my-mat-light-theme-foreground(
   mat.get-color-from-palette($theme-primary, 700)
 );
-$my-app-theme-custom: map-merge(
-  $my-theme,
-  (
-    foreground: $my-foreground,
-  )
-);
 
-@include mat.all-component-themes($my-app-theme-custom);
-@include mat.all-legacy-component-themes($my-app-theme-custom);
+// $my-app-colors: map.get($my-theme, color);
+// $my-app-colors: map.merge(
+//   $my-app-colors,
+//   (
+//     foreground:  $my-foreground
+//   )
+// );
+
+// $my-theme-custom: map.merge(
+//   $my-theme,
+//   (
+//     color: $my-app-colors
+//   )
+// );
+
+$my-theme-custom: map.set($my-theme, color, foreground, $my-foreground);
+@include mat.all-component-themes($my-theme-custom);
+@include mat.all-legacy-component-themes($my-theme-custom);
